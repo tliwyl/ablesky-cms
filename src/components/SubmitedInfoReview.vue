@@ -49,8 +49,8 @@
               disabled
               value-format="yyyy年MM月dd日"
               format="yyyy 年 MM 月 dd 日"
-              type="date"
-              v-model="form.startime"
+              type="dates"
+              v-model="startime"
               style="width: 100%;"
             ></el-date-picker>
           </el-col>
@@ -60,8 +60,8 @@
               disabled
               value-format="yyyy年MM月dd日"
               format="yyyy 年 MM 月 dd 日"
-              type="date"
-              v-model="form.endtime"
+              type="dates"
+              v-model="endtime"
               style="width: 100%;"
             ></el-date-picker>
           </el-col>
@@ -143,9 +143,9 @@ export default {
       };
     }
   },
-  mounted(){
+  created(){
     if(this.$router){
-      let str=sessionStorage.getItem("merchantsId").match(/\d+/g).join();
+      let str=sessionStorage.getItem("merchantsId");
     let params={
       merchants_id:str
     }
@@ -153,27 +153,26 @@ export default {
       if(data.data){
         let reviewdata=data.data;
         //console.log(reviewdata)
-        if(true){
-        this.form.startime=reviewdata.orgLicenseTime.split("-")[0] ;
-        this.form.endtime=reviewdata.orgLicenseTime.split("-")[1] ;
+        if(reviewdata.id!=""){
+        this.startime=reviewdata.orgLicenseTime.split("-")[0] ;
+        this.endtime=reviewdata.orgLicenseTime.split("-")[1] ;
         }else{
-          this.org_license_time="永久有效"
+          this.form.org_license_time="永久有效"
         }
         this.form.merchants_name=reviewdata.merchantsName || "未填写"
         this.form.org_name=reviewdata.orgName || "未填写"
         this.form.brand =reviewdata.brand || "未填写"
-        this.form.edu_type=reviewdata.eduType || "未填写"
-        this.form.org_type=reviewdata.orgType || "未填写"
+        this.form.edu_type=Number(reviewdata.eduType) || 2
+        this.form.org_type=reviewdata.orgType || 1
         this.form.org_code=reviewdata.orgCode || "未填写"
         this.form.owner_name=reviewdata.ownerName || "未填写"
         this.form.owner_mail=reviewdata.ownerMail || "未填写"
         this.form.legal_people_name=reviewdata.legalPeopleName || "未填写"
-        this.org_license=reviewdata.orgLicense || "未填写"
-        this.org_license_time=reviewdata.orgLicenseTime || "未填写"
-        this.form.type=reviewdata.type || "未填写"
+        this.form.org_license=reviewdata.orgLicense || "未填写"
+        this.form.org_license_time=reviewdata.orgLicenseTime || "未填写"
+        this.form.type=2
         this.insertNumer.owner_phone=reviewdata.ownerPhone || "未填写"
         this.name=sessionStorage.getItem("username")
-        console.log(this.org_license)
       }else{
         this.$message({
           message:"请重新操作一遍",

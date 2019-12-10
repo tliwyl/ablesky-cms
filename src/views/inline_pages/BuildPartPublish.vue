@@ -56,7 +56,7 @@ export default {
       if(!this.shop_id){
         this.$message({
           message: '请选择要绑定的商铺',
-          type: 'success'
+          type: 'error'
         });
         return ;
       }
@@ -65,7 +65,7 @@ export default {
         if(data.error_code){
           this.$message({
           message: data.error_msg,
-          type: 'success'
+          type: 'error'
         });
 
         }else{

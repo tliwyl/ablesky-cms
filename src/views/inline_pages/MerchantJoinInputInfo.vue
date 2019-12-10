@@ -1,4 +1,5 @@
 <template>
+
   <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane :disabled="!sessionIs" label="商户入驻" name="first">
       <el-form :model="form" label-width="110px" style="margin:20px;width:60%;min-width:600px;">
@@ -117,7 +118,6 @@
         </el-form-item>
       </el-form>
     </el-tab-pane>
-
     <el-tab-pane :disabled="sessionIs" label="审核情况" name="second">
       <el-steps
         v-model="merchantsState.status"
@@ -211,7 +211,7 @@ export default {
       this.form.endtime = parseInt(oDate.getTime() / 1000);
     },
     getSession() {
-      return sessionStorage.getItem("merchantsId").match(/\d+/g)
+      return sessionStorage.getItem("merchantsId")
         ? (this.sessionIs = false)
         : (this.sessionIs = true);
     },
@@ -331,10 +331,7 @@ export default {
     }
   },
   created(){
-    var str = sessionStorage
-        .getItem("merchantsId")
-        .match(/\d+/g)
-        .join();
+    var str = sessionStorage.getItem("merchantsId")
       let params = {
         merchants_id: str
       };
@@ -349,19 +346,14 @@ export default {
         this.merchantsState.name = data.data.name;
         this.merchantsState.audit_msg = data.data.audit_msg;
         this.merchantsState.audit_time = data.data.audit_time;
-        // let _this=this;
-        // (function(param){
-        //   if(param==="1"){
-        //     return _this.merchantsState.status="拒绝"
-        //   }else{
-        //     return _this.merchantsState.status="通过"
-        //   }
-        // })(data.data.status)
-        
+        this.getSession()
       });
 
       
 
+  },
+  mounted(){
+    this.getSession()
   }
 };
 </script>
