@@ -163,7 +163,7 @@ export default {
         this.form.org_name=reviewdata.orgName || "未填写"
         this.form.brand =reviewdata.brand || "未填写"
         this.form.edu_type=Number(reviewdata.eduType) || 2
-        this.form.org_type=reviewdata.orgType || 1
+        this.form.org_type=Number(reviewdata.orgType) || 1
         this.form.org_code=reviewdata.orgCode || "未填写"
         this.form.owner_name=reviewdata.ownerName || "未填写"
         this.form.owner_mail=reviewdata.ownerMail || "未填写"

@@ -244,20 +244,21 @@ export default {
       this.selectedOptionsServiceCity = value.map(function(item) {
         return CodeToText[item];
       });
+      this.selectedOptionsServiceCity=this.selectedOptionsServiceCity.join(",").split()
     },
     handleChangePosCity(value) {
       this.selectedOptionsPosCity = value.map(function(item) {
         return CodeToText[item];
       });
       this.selectedOptionsPosCity=this.selectedOptionsPosCity;
-      console.log(this.selectedOptionsPosCity)
+     // console.log(this.selectedOptionsPosCity)
     },
     handleSubmit() {
       let shop_info = {
         name: this.form.name,
         avatar: this.form.avatar,
         category:this.category, //["留学_留学考试/培训_雅思"]  this.form.category
-        location: this.selectedOptionsPosCity, //"北京市,北京市,昌平区"
+        location: this.selectedOptionsPosCity.join(), //"北京市,北京市,昌平区"
         work_day: `${this.values}至${this.valuee}`,
         work_time: `${this.startTime}-${this.endTime}`,
         detail_address: this.form.detail_address,
@@ -289,21 +290,18 @@ export default {
       this.$router.push({ path: "/submitInfoList" });
     },
     handleRemove(file, fileList) {
-      //console.log(file, fileList);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     handleavatarSuccess(res, file) {
-      console.log(res);
       this.form.avatar = res.data;
     },
     handleprotocol(res, file) {
       this.form.tp_auth_img = res.data;
     },
     PicLicenseErr(err, file, fileList) {
-      console.log(err);
     },
     sendMsg() {
       const reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
@@ -325,7 +323,7 @@ export default {
         mobile: this.insertNumer.owner_phone
       };
       phoneCode(params).then(data => {
-        console.log(data);
+       // console.log(data);
         this.$message({
           message: "验证码已发送，5分钟内有效",
           center: true
