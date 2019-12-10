@@ -19,11 +19,11 @@
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt>
+            <img width="100%" :src="dialogImageUrl" alt />
           </el-dialog>
           <el-row>
             <el-button type="primary" @click="handleSubmitImg">提交</el-button>
-            <el-button type="warning" @click="handleClickNext">取消</el-button>
+            <el-button type @click="handleBackToList">取消</el-button>
           </el-row>
         </div>
         <div v-else>不可编辑</div>
@@ -55,11 +55,11 @@
               :on-error="PicLicenseErr"
               :on-success="handlePartSuccess"
             >
-              <img v-if="form.avatar" :src="form.avatar" class="avatar">
+              <img v-if="form.avatar" :src="form.avatar" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt>
+              <img width="100%" :src="dialogImageUrl" alt />
             </el-dialog>
           </el-form-item>
           <el-form-item class="must_write" label="评论内容">
@@ -73,7 +73,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click.native.prevent="handleMsgSure">确定</el-button>
-            <el-button @clcik.native.prevent="handleMsgReset">取消</el-button>
+            <el-button @clcik.native.prevent="handleBackToList">取消</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -132,7 +132,7 @@
               :on-error="PicLicenseErrCourse"
               :on-success="handlePartSuccessCourse"
             >
-              <img v-if="course_images" :src="course_images" class="avatar">
+              <img v-if="course_images" :src="course_images" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -291,7 +291,7 @@
                         v-if="course_highlight.image"
                         :src="course_highlight.image"
                         class="avatar"
-                      >
+                      />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                     <ol
@@ -337,7 +337,7 @@
                         v-if="course_audience_type.image"
                         :src="course_audience_type.image"
                         class="avatar"
-                      >
+                      />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                     <ol
@@ -383,7 +383,7 @@
                         v-if="course_objective.image"
                         :src="course_objective.image"
                         class="avatar"
-                      >
+                      />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                     <ol
@@ -429,7 +429,7 @@
                         v-if="course_course_content.image"
                         :src="course_course_content.image"
                         class="avatar"
-                      >
+                      />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                     <ol
@@ -449,42 +449,58 @@
           <!-- 最后提交信息 -->
           <el-form-item>
             <el-button @click.native.prevent="handleCourseSure">确定</el-button>
-            <el-button @click.native.prevent="handleCourseReset">取消</el-button>
+            <!-- <el-button @click.native.prevent="handleCourseReset">取消</el-button> -->
+            <el-button @click.native.prevent="handleBackToList">取消</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="预约电话" name="30001" align-center>
         <el-form label-width="110px" style="margin:20px;width:60%;min-width:600px;">
-          <el-form-item label="店铺列表">
-            <el-select v-model="shop_id" placeholder="请选择">
-              <el-option
-                v-for="item in shopListData"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="联系电话">
-            <el-input type="number"></el-input>
-          </el-form-item>
+          <el-card style="width:500px">
+            <el-form-item label="店铺列表">
+              <el-select v-model="shop_id" placeholder="请选择">
+                <el-option
+                  v-for="item in shopListData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <el-input style="width:220px" type="text" v-model="subscribePhone"></el-input>
+            </el-form-item>
+            <el-form-item style="padding-left:30px">
+              <el-button type="info" @click.native.prevent="handlePostOrderPhone">确定</el-button>
+              <el-button @click.native.prevent="handleBackToList">取消</el-button>
+            </el-form-item>
+          </el-card>
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="咨询电话" name="30002" align-center>
         <el-form label-width="110px" style="margin:20px;width:60%;min-width:600px;">
-          <el-form-item label="店铺列表">
-            <el-select v-model="shop_id" placeholder="请选择">
-              <el-option
-                v-for="item in shopListData"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="联系电话">
-            <el-input type="number"></el-input>
-          </el-form-item>
+          <el-card style="width:500px">
+            <el-form-item label="店铺列表">
+              <el-select v-model="shop_id" placeholder="请选择">
+                <el-option
+                  v-for="item in shopListData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="咨询电话">
+              <el-input style="width:220px" type="text" v-model="tabFive_subPhone"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <el-input style="width:220px" type="text" v-model="tabFive_adrsPhone"></el-input>
+            </el-form-item>
+            <el-form-item style="padding-left:30px">
+              <el-button type="info" @click.native.prevent="handlePostAdresPhone">确定</el-button>
+              <el-button @click.native.prevent="handleBackToList">取消</el-button>
+            </el-form-item>
+          </el-card>
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -500,9 +516,11 @@ import utils from "../../common/js/util.js";
 export default {
   data() {
     return {
+      tabFive_adrsPhone: "",
+      tabFive_subPhone: "",
+      subscribePhone: "",
       editAble: true,
-      mid: sessionStorage
-        .getItem("merchantsId"),
+      mid: sessionStorage.getItem("merchantsId"),
       auActive: true,
       shopListData: [],
       course_content: {
@@ -645,6 +663,36 @@ export default {
     let material_type = sessionStorage.getItem("material_type");
   },
   methods: {
+    handlePostAdresPhone() {
+      let params = {
+        name: "咨询电话",
+        phone_list: [
+          {
+            phone: this.tabFive_subPhone,
+            score: 0
+          }
+        ],
+        desc: "咨询电话",
+        bind_object_id: this.shop_id,
+        callback_tel: this.tabFive_AdrsPhone
+      };
+      createPart(qs.stringify(params)).then(res => {
+        console.log(res);
+        this.$router.push({ path: "/addPartsList" });
+      });
+    },
+    handlePostOrderPhone() {
+      let params = {
+        name: "预约电话",
+        desc: "预约电话",
+        bind_object_id: this.shop_id,
+        callback_tel: this.subscribePhone
+      };
+      createPart(qs.stringify(params)).then(res => {
+        console.log(res);
+        this.$router.push({ path: "/addPartsList" });
+      });
+    },
     beforeAvatarUploadContent() {
       return true;
     },
@@ -933,8 +981,7 @@ export default {
       this.headerImg = res.data;
     },
     handleMsgSure() {
-      let mid = sessionStorage
-        .getItem("merchantsId")
+      let mid = sessionStorage.getItem("merchantsId");
       let oDate = this.form.time;
       if (oDate) {
         this.form.time = `${oDate.getFullYear()}-${utils.toDou(
@@ -1043,16 +1090,15 @@ export default {
     objectiveImgAdress(res, file) {
       this.objective.image = res.data;
     },
-    handleClickNext() {
-      this.$router.push({ path: "/addParts" });
+    handleBackToList() {
+      this.$router.push({ path: "/addPartsList" });
     },
     handleSubmitedInfo() {
       this.$router.push({ path: "/submitedInfo" });
     },
     handleClick(tab, event) {
       if (tab.name === "10006" || tab.name === "30002") {
-        let mid = sessionStorage
-          .getItem("merchantsId")
+        let mid = sessionStorage.getItem("merchantsId");
         let params = {
           merchants_id: mid,
           status: 2
