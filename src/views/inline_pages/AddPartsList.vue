@@ -45,18 +45,19 @@
             <el-button type="info" size="small" @click="handleView(scope.$index, scope.row)">查看</el-button>
             <!-- <el-button type="primary" size="small">更新</el-button> -->
             <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-            <el-button v-if="scope.row.pulishStatus=='0'"
+            <el-button
+              v-if="scope.row.pulishStatus=='0'"
               type="success"
               :disabled="scope.row.pulishStatus"
               size="small"
               @click="handleToPublish(scope.$index, scope.row)"
             >绑定</el-button>
-            <el-button v-else
+            <!-- <el-button
+              v-else
               type="warning"
               size="small"
               @click="handleUnpublish(scope.$index, scope.row)"
-            >解绑</el-button>
-
+            >解绑</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -101,21 +102,16 @@ export default {
   },
   methods: {
     //去往绑定页面
-    handleToPublish(idx,row){
-      console.log(idx, row)
-      this.$router.push({path:'/BuildPartPublish',
-        props:{
-          index:idx,
-          row:row
-        }
-      });
+    handleToPublish(idx, row) {
+      console.log(idx, row);
+      this.$router.push({ path: "/BuildPartPublish", query: { ...row} });
     },
 
     queryMaterialList() {
       this.getMaterialData();
     },
     getMaterialData() {
-      const mid = sessionStorage.getItem("merchantsId")
+      const mid = sessionStorage.getItem("merchantsId");
       let params = {
         merchants_id: mid,
         shop_id: "",
@@ -126,7 +122,6 @@ export default {
       };
       queryMaterial(qs.stringify(params)).then(res => {
         let { material } = res;
-        console.log(res);
         material = material.map((item, index) => {
           item.index = index + 1;
           item.material_typeValue = item.material_type;
