@@ -46,7 +46,7 @@ export default {
       ruleForm2: {
         account: "",
         checkPass: "",
-        repeatPass: "123456"
+        repeatPass: ""
       },
       rules2: {
         account: [
@@ -90,7 +90,7 @@ export default {
               this.$message({
                 message: message
               });
-              //this.$router.push({path:"/login"})
+              this.$router.push({path:"/login"})
             } else {
               this.$message({
                 message: message

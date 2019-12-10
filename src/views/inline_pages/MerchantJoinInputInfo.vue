@@ -211,9 +211,14 @@ export default {
       this.form.endtime = parseInt(oDate.getTime() / 1000);
     },
     getSession() {
-      return sessionStorage.getItem("merchantsId")
-        ? (this.sessionIs = false)
-        : (this.sessionIs = true);
+       if(sessionStorage.getItem("merchantsId")=="null"){
+         this.sessionIs=true;
+       }else{
+         this.sessionIs=false;
+
+       }
+
+        return this.sessionIs
     },
     handleCreateMerchants() {
       let str = sessionStorage.getItem("merchantsId");
@@ -346,7 +351,6 @@ export default {
         this.merchantsState.name = data.data.name;
         this.merchantsState.audit_msg = data.data.audit_msg;
         this.merchantsState.audit_time = data.data.audit_time;
-        this.getSession()
       });
 
       
