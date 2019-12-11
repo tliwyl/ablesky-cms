@@ -122,6 +122,8 @@ export default {
       };
       queryMaterial(qs.stringify(params)).then(res => {
         let { material } = res;
+
+        if(material){
         material = material.map((item, index) => {
           item.index = index + 1;
           item.material_typeValue = item.material_type;
@@ -131,6 +133,14 @@ export default {
           return item;
         });
         this.material_list = material;
+        }else{
+          this.$message({
+            message:"当前物料为空，请新增物料吧",
+            type:'info'
+          })
+          return;
+        }
+
       });
     },
     addNewOne() {

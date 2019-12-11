@@ -508,7 +508,7 @@
 </template>
 
 <script>
-import { createPart, checkShopState } from "../../api/api.js";
+import { createPart, checkShopState,UpLoadMedia } from "../../api/api.js";
 import qs from "qs";
 import categoryjson from "../../common/js/Category.js";
 import utils from "../../common/js/util.js";

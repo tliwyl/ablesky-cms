@@ -1,6 +1,9 @@
 import axios from "axios";
 
 let baseURL = "";
+//重要图片上传
+export const BuildUpLoadMedia="http://192.168.202.190:8081/openApi/media_upload";
+export const devUpLoadMedia="http://192.168.3.253:8081/openApi/media_upload";
 
 export const requestLogin = params => {
   return axios
@@ -19,9 +22,9 @@ export const createMerchants = params => {
     .post(`${baseURL}/openApi/edu_merchants_create`, params)
     .then(res => res.data);
 };
-
+//查看商户审核状态，根据状态判断是否创建店铺
 export const checkMerchantState = params => {
-  return axios.get(`${baseURL}/openApi/merchants_view`, { params: params });
+  return axios.post(`${baseURL}/openApi/merchants_view`, params);
 };
 
 export const reSubmitMerchant = params => {
@@ -33,12 +36,20 @@ export const getMerchantsInfo = params => {
     .get(`${baseURL}/openApi/getMerchantsInfo`, { params: params })
     .then(res => res.data);
 };
+//查询商户审核状态，确定是否创建店铺
+export const shopStatus = params => {
+  return axios
+    .get(`${baseURL}/openApi/shop_view`, {params:params})
+    .then(res => res.data);
+};
 //创建店铺
 export const shopCreate = params => {
   return axios
     .post(`${baseURL}/openApi/shop_create`, params)
     .then(res => res.data);
 };
+
+
 
 export const shopUpdate = params => {
   return axios

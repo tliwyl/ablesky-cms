@@ -16,7 +16,7 @@
         <el-form-item class="must_write" label="注册类型">
           <el-radio-group v-model="form.type">
             <el-radio :label="2">企业</el-radio>
-            <el-radio :label="1">个人</el-radio>
+            <!-- <el-radio :label="1">个人</el-radio> -->
           </el-radio-group>
         </el-form-item>
 
@@ -49,7 +49,7 @@
               placeholder="选择日期"
               v-model="form.startime"
               style="width: 100%;"
-              @change="formattimeStart"
+              @change.once="formattimeStart"
             ></el-date-picker>
           </el-col>
 
@@ -59,7 +59,7 @@
               placeholder="选择日期"
               v-model="form.endtime"
               style="width: 100%;"
-              @change="formattimeEnd"
+              @change.once="formattimeEnd"
             ></el-date-picker>
           </el-col>
         </el-form-item>
@@ -202,13 +202,13 @@ export default {
       var aDate = val.split('-');
       var oDate = new Date();
       oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.startime = parseInt(oDate.getTime() / 1000);
+      this.form.startime = parseInt(oDate.getTime());
     },
     formattimeEnd(val) {
       var aDate = val.split('-');
       var oDate = new Date();
       oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.endtime = parseInt(oDate.getTime() / 1000);
+      this.form.endtime = parseInt(oDate.getTime());
     },
     getSession() {
        if(sessionStorage.getItem("merchantsId")=="null"){
@@ -241,7 +241,7 @@ export default {
           org_name: this.form.org_name,
           brand: this.form.brand,
           edu_type: String(this.form.edu_type),
-          org_type: this.form.org_type,
+          org_type: String(this.form.org_type),
           org_code: this.form.org_code,
           owner_name: this.form.owner_name,
           owner_mail: this.form.owner_mail,

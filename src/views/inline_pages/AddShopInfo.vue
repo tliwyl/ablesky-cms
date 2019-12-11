@@ -50,12 +50,12 @@
         <i class="el-icon-plus"></i>
       </el-upload>
       <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt>
+        <img width="100%" :src="dialogImageUrl" alt />
       </el-dialog>
     </el-form-item>
 
     <el-form-item class="must_write" label=" 经营类目">
-      <el-cascader :options="categorys"  @change="handleChangeCate"></el-cascader>
+      <el-cascader :options="categorys" @change="handleChangeCate"></el-cascader>
     </el-form-item>
 
     <el-form-item class="must_write _spin1" label="营业日">
@@ -91,7 +91,7 @@
       ></el-time-select>
     </el-form-item>
 
-    <el-form-item class="" label="合作授权协议">
+    <el-form-item class label="合作授权协议">
       <el-upload
         limit="1"
         :headers="headers"
@@ -107,7 +107,7 @@
         <i class="el-icon-plus"></i>
       </el-upload>
       <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt>
+        <img width="100%" :src="dialogImageUrl" alt />
       </el-dialog>
     </el-form-item>
 
@@ -139,10 +139,10 @@
 </template>
 
 <script>
-import { shopCreate, phoneCode } from "../../api/api.js";
+import { shopCreate, phoneCode, checkMerchantState } from "../../api/api.js";
 import { arr } from "../../common/js/workday.js";
 import categoryjson from "../../common/js/Category.js";
-import {} from "../../common/js/Category.js"
+import {} from "../../common/js/Category.js";
 import {
   provinceAndCityData,
   regionData,
@@ -156,7 +156,7 @@ import qs from "qs";
 export default {
   data() {
     return {
-      mid:sessionStorage.getItem("merchantsId"),
+      mid: sessionStorage.getItem("merchantsId"),
       values: "",
       valuee: "",
       arr: [
@@ -235,29 +235,35 @@ export default {
   methods: {
     handleChangeCate(value) {
       //处理数据
-      let str=value.join("_")
-      let arr=[];
-      arr.push(str)
-      this.category=arr;
+      let str = value.join("_");
+      let arr = [];
+      arr.push(str);
+      this.category = arr;
     },
     handleChangeServiceCity(value) {
       this.selectedOptionsServiceCity = value.map(function(item) {
         return CodeToText[item];
       });
-      this.selectedOptionsServiceCity=this.selectedOptionsServiceCity.join(",").split()
+      this.selectedOptionsServiceCity = this.selectedOptionsServiceCity
+        .join(",")
+        .split();
     },
     handleChangePosCity(value) {
       this.selectedOptionsPosCity = value.map(function(item) {
         return CodeToText[item];
       });
-      this.selectedOptionsPosCity=this.selectedOptionsPosCity;
-     // console.log(this.selectedOptionsPosCity)
+      this.selectedOptionsPosCity = this.selectedOptionsPosCity;
+      // console.log(this.selectedOptionsPosCity)
     },
     handleSubmit() {
+      let str = sessionStorage.getItem("merchantsId");
+      let params = {
+        merchants_id: str
+      };
       let shop_info = {
         name: this.form.name,
         avatar: this.form.avatar,
-        category:this.category, //["留学_留学考试/培训_雅思"]  this.form.category
+        category: this.category, //["留学_留学考试/培训_雅思"]  this.form.category
         location: this.selectedOptionsPosCity.join(), //"北京市,北京市,昌平区"
         work_day: `${this.values}至${this.valuee}`,
         work_time: `${this.startTime}-${this.endTime}`,
@@ -270,27 +276,36 @@ export default {
         service_city: this.selectedOptionsServiceCity,
         tp_auth_img: this.form.tp_auth_img
       };
-      var str = sessionStorage.getItem("merchantsId")
-      var params = {
+
+      var params1 = {
         shop_info: JSON.stringify(shop_info),
         merchants_id: str
       };
-      params = qs.stringify(params);
-      shopCreate(params).then(data => {
-        if (data.shop_id) {
+
+      checkMerchantState(qs.stringify(params)).then(res => {
+        if (res.data.status=="0") {
           this.$message({
-            message:"添加成功",
-            type:"success"
+            message: "请您先创建商户，再进行此操作",
+            type: "error"
           });
-          this.$router.push({ path: "/submitInfoList" });
+          return;
+        } else {
+          shopCreate(qs.stringify(params1)).then(data => {
+            if (data.shop_id) {
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+              this.$router.push({ path: "/submitInfoList" });
+            }
+          });
         }
       });
     },
     handleReset() {
       this.$router.push({ path: "/submitInfoList" });
     },
-    handleRemove(file, fileList) {
-    },
+    handleRemove(file, fileList) {},
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -301,8 +316,7 @@ export default {
     handleprotocol(res, file) {
       this.form.tp_auth_img = res.data;
     },
-    PicLicenseErr(err, file, fileList) {
-    },
+    PicLicenseErr(err, file, fileList) {},
     sendMsg() {
       const reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
       if (this.insertNumer.owner_phone == "") {
@@ -323,7 +337,7 @@ export default {
         mobile: this.insertNumer.owner_phone
       };
       phoneCode(params).then(data => {
-       // console.log(data);
+        // console.log(data);
         this.$message({
           message: "验证码已发送，5分钟内有效",
           center: true
