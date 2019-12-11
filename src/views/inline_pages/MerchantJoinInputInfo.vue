@@ -58,7 +58,6 @@
               placeholder="选择日期"
               style="width: 100%;"
               v-model="form.endtime"
-              @change.once="formattimeEnd"
             ></el-date-picker>
           </el-col>
         </el-form-item>
@@ -74,7 +73,7 @@
             limit="1"
             :headers="headers"
             name="media"
-            action="http://192.168.202.190:8081/openApi/account_upload"
+            action="http://192.168.3.253:8081/openApi/account_upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
@@ -87,9 +86,9 @@
             <img width="100%" :src="dialogImageUrl" alt>
           </el-dialog>
         </el-form-item>
-        <el-form-item class label="法人姓名:">
+        <!-- <el-form-item class label="法人姓名:">
           <el-input v-model="form.legal_people_name" placeholder="个体工商户不填"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input v-model="form.owner_name" placeholder="填写您的姓名"></el-input>
         </el-form-item>
@@ -113,7 +112,7 @@
 
         <el-form-item>
           <el-button type="primary" @click.native.prevent="handleCreateMerchants">立即创建</el-button>
-          <el-button @click.native.prevent>取消</el-button>
+          <el-button @click.native.prevent="handleRefish">取消</el-button>
         </el-form-item>
       </el-form>
     </el-tab-pane>
@@ -126,7 +125,7 @@
       >
         <el-step title="信息填写"></el-step>
         <el-step title="进行中"></el-step>
-        <el-step title="审核成功" :description="merchantsState.audit_msg"></el-step>
+        <el-step title="审核结果" :description="merchantsState.audit_msg"></el-step>
       </el-steps>
 
       <el-row style="margin-left:350px">
@@ -193,17 +192,9 @@ export default {
       };
     },
     startime(){
-      debugger;
-      // console.log(this.form.startime)
-      // var aDate = this.form.startime.split('-');
-      // var oDate = new Date();
-      // oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
      return parseInt(this.form.startime.getTime());
     },
     endtime(){
-      // var aDate = this.form.endtime.split('-');
-      // var oDate = new Date();
-      // oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
      return parseInt(this.form.endtime.getTime());
     }
   },
@@ -211,29 +202,30 @@ export default {
     this.activeName = this.getSession() ? 'first' : 'second';
   },
   methods: {
-    // formattimeStart(val) {
-    //   console.log(val)
-    //   var aDate = val.split('-');
-    //   var oDate = new Date();
-    //   oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-    //   this.form.startime = parseInt(oDate.getTime());
-    //   console.log(this.form.startime)
-
-    // },
-    // formattimeEnd(val) {
-    //   console.log(val)
-    //   var aDate = val.split('-');
-    //   var oDate = new Date();
-    //   oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-    //   this.form.endtime = parseInt(oDate.getTime());
-    //   console.log(this.form.endtime)
-    // },
+    handleRefish(){
+      this.$router.push({path:"/merchantJoinInputInfo"})
+    },
     getSession() {
-       if(sessionStorage.getItem("merchantsId")=="null"){
-         this.sessionIs=true;
-       }else{
-         this.sessionIs=false;
-       }
+        let params=sessionStorage.getItem("merchantsId")
+         if(params=="null" || params==""){
+           return this.sessionIs=true;
+         }else{
+           return this.sessionIs=false;
+         }
+        
+    },
+    getMecStatus(){
+      let params={
+          merchants_id:sessionStorage.getItem("merchantsId")
+        }
+      checkMerchantState(qs.stringify(params)).then(res=>{
+          if(res.data.status==0){
+            console.log(res.data.status)
+            this.sessionIs=false;
+          }else{
+            this.sessionIs=true;
+          }
+        })
         return this.sessionIs
     },
     handleCreateMerchants() {
@@ -241,7 +233,7 @@ export default {
       // 得到的str是null的时候证明没有该用户。
       if (str.match(/\d+/g)) {
         this.$message({
-          message: "您已经创建一个商户,赶快创建店铺吧",
+          message: "您已经创建了商户",
           type: "warning"
         });
         return;
@@ -254,16 +246,16 @@ export default {
         }
         let credential = {
           merchants_name: this.form.merchants_name,
-          org_name: this.form.org_name,
           brand: this.form.brand,
           edu_type: String(this.form.edu_type),
           org_type: String(this.form.org_type),
           org_code: this.form.org_code,
-          owner_name: this.form.owner_name,
-          owner_mail: this.form.owner_mail,
-          legal_people_name: this.form.legal_people_name,
+          org_name:this.form.org_name,//问题
           org_license_time: this.org_license_time,
-          org_license: this.form.org_license
+          org_license: this.form.org_license,
+          owner_name: this.form.owner_name,
+          owner_phone: this.insertNumer.owner_phone,
+          owner_mail: this.form.owner_mail,
         };
 
         let params = {
@@ -281,7 +273,9 @@ export default {
               type: "success"
             });
             sessionStorage.setItem("merchantsId", data.merchants_id);
+            window.location.reload();
           }
+
         });
       }
     },
@@ -348,7 +342,7 @@ export default {
       this.form.org_license = res.data;
     },
     PicLicenseErr(err, file, fileList) {
-      console.log(err);
+      //console.log(err);
     }
   },
   created(){
@@ -356,7 +350,7 @@ export default {
       let params = {
         merchants_id: str
       };
-      checkMerchantState(params).then(data => {
+      checkMerchantState(qs.stringify(params)).then(data => {
         //修改并重新申请，按钮控制
         if(data.data.status=="1"){
           this.isReSubmit=false;
@@ -368,9 +362,6 @@ export default {
         this.merchantsState.audit_msg = data.data.audit_msg;
         this.merchantsState.audit_time = data.data.audit_time;
       });
-
-      
-
   },
   mounted(){
     this.getSession()

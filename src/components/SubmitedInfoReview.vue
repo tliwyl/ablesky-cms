@@ -74,9 +74,9 @@
         <el-form-item class="must_write" label="资质附件">
           <img :src="form.org_license" width="400" height="400" alt="资质附件图片"/>
         </el-form-item>
-        <el-form-item class="" label="法人姓名:">
+        <!-- <el-form-item class="" label="法人姓名:">
           <el-input readonly v-model="form.legal_people_name"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input readonly v-model="form.owner_name"></el-input>
         </el-form-item>
@@ -167,7 +167,7 @@ export default {
         this.form.org_code=reviewdata.orgCode || "未填写"
         this.form.owner_name=reviewdata.ownerName || "未填写"
         this.form.owner_mail=reviewdata.ownerMail || "未填写"
-        this.form.legal_people_name=reviewdata.legalPeopleName || "未填写"
+       
         this.form.org_license=reviewdata.orgLicense || "未填写"
         this.form.org_license_time=reviewdata.orgLicenseTime || "未填写"
         this.form.type=2
