@@ -9,7 +9,7 @@ import SubmitedInfoReview from './components/SubmitedInfoReview.vue'
 import AddMerchantInfo from './views/inline_pages/AddMerchantInfo.vue'
 import MerchantJoin from './views/inline_pages/MerchantJoin.vue'
 import MJoinedInfo from './views/inline_pages/MJoinedInfo.vue'
-import MerchantJoined from './views/inline_pages/MerchantJoined.vue'
+//import MerchantJoined from './views/inline_pages/MerchantJoined.vue'
 import MerchantJoinInputInfo from './views/inline_pages/MerchantJoinInputInfo.vue'
 //重新提交商户信息
 import ReSubmitMerchant from './views/inline_pages/ReSubmitMerchant.vue'
@@ -69,12 +69,12 @@ let routes = [
                     name:'商户入驻',
                     hidden:true,
                     children:[
-                        {
-                            path:"/merchantJoined",
-                            component:MerchantJoined,
-                            name:'商户入驻页',
-                            hidden:true
-                        },
+                        // {
+                        //     path:"/merchantJoined",
+                        //     component:MerchantJoined,
+                        //     name:'商户入驻页',
+                        //     hidden:true
+                        // },
                         {
                             path:"/merchantjoinedinfo",
                             component:MJoinedInfo,

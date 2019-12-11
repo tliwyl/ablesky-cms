@@ -57,7 +57,6 @@
               placeholder="选择日期"
               v-model="form.startime"
               style="width: 100%;"
-              @change.once="formattimeStart"
             ></el-date-picker>
           </el-col>
 
@@ -69,7 +68,6 @@
               placeholder="选择日期"
               v-model="form.endtime"
               style="width: 100%;"
-              @change.once="formattimeEnd"
             ></el-date-picker>
           </el-col>
           <el-checkbox-group v-model="form.org_license_time">
@@ -159,6 +157,7 @@ import {phoneCode,createMerchants,checkMerchantState} from "../../api/api";
 export default {
   data() {
     return {
+      mid:sessionStorage.getItem("merchantsId"),
       disabled: true,
       buttonName: "发送短信",
       isDisabled: false,
@@ -205,18 +204,6 @@ export default {
   },
     
   methods: {
-    formattimeStart(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.startime = parseInt(oDate.getTime() / 1000);
-    },
-    formattimeEnd(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.endtime = parseInt(oDate.getTime() / 1000);
-    },
     getSession(){
           this.activeName="second";
           return sessionStorage.getItem("merchantsId")?false:true;

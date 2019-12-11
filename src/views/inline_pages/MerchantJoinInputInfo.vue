@@ -68,6 +68,7 @@
         </el-form-item>
         <!-- 图片上传 -->
         <el-form-item class="must_write" label="资质附件">
+          <!-- 资质附件 上传图片只能是account 没有携带任何参数 与上传相关接口-->
           <el-upload
             tip="上传一张营业执照"
             limit="1"
@@ -86,9 +87,7 @@
             <img width="100%" :src="dialogImageUrl" alt>
           </el-dialog>
         </el-form-item>
-        <!-- <el-form-item class label="法人姓名:">
-          <el-input v-model="form.legal_people_name" placeholder="个体工商户不填"></el-input>
-        </el-form-item> -->
+       
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input v-model="form.owner_name" placeholder="填写您的姓名"></el-input>
         </el-form-item>
@@ -143,6 +142,7 @@ import qs from "qs";
 export default {
   data() {
     return {
+      mid:sessionStorage.getItem("merchantsId"),
       isReSubmit:false,
       merchantsState: {
         status: "",
@@ -220,7 +220,7 @@ export default {
         }
       checkMerchantState(qs.stringify(params)).then(res=>{
           if(res.data.status==0){
-            console.log(res.data.status)
+          //  console.log(res.data.status)
             this.sessionIs=false;
           }else{
             this.sessionIs=true;
