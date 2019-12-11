@@ -27,8 +27,7 @@
       <el-button
         type="primary"
         style="width:100%;"
-        @click.native.prevent="handleSubmit2"
-        :loading="logining"
+        @click.native.prevent="handleRegister"
       >注册</el-button>
     </el-form-item>
     <el-form-item>
@@ -68,18 +67,27 @@ export default {
     handleReset2() {
       this.$refs.ruleForm2.resetFields();
     },
-    handleSubmit2(ev) {
-      var _this = this;
+    handleRegister(ev) {
+      var Params = {
+            name: this.ruleForm2.account,
+            pwd: this.ruleForm2.checkPass,
+            repeatPwd: this.ruleForm2.repeatPass
+          };
+      if(Params.name=="" || Params.pwd=="" || Params.repeatPwd==""){
+        this.$message({
+          message:"请检查输入项是否为空",
+          type:"error"
+        })
+      }else{
+        var _this = this;
       this.$refs.ruleForm2.validate(valid => {
         if (valid) {
-          this.logining = true;
           var Params = {
             name: this.ruleForm2.account,
             pwd: this.ruleForm2.checkPass,
             repeatPwd: this.ruleForm2.repeatPass
           };
           requestRegister(Params).then(res => {
-            this.logining = false;
             let { status, data, message } = res;
             if (status == "false") {
               this.$message({
@@ -102,6 +110,7 @@ export default {
           return false;
         }
       });
+      }
     }
   }
 };

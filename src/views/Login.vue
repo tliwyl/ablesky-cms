@@ -20,7 +20,6 @@
         type="primary"
         style="width:100%;"
         @click.native.prevent="handleLogin"
-        :loading="logining"
       >登录</el-button>
     </el-form-item>
 
@@ -64,15 +63,21 @@ export default {
       this.$router.push({ path: "/register" });
     },
     handleLogin(ev) {
-      this.$refs.ruleForm2.validate(valid => {
-        if (valid) {
-          this.logining = true;
-          var loginParams = {
+      var loginParams = {
             name: this.ruleForm2.username,
             pwd: this.ruleForm2.password
-          };
+             }
+      if(loginParams.name=="" || loginParams.pwd==""){
+        this.$message({
+          message:"请检查输入项是否为空",
+          type:"error"
+        })
+
+      }else{
+        this.$refs.ruleForm2.validate(valid => {
+        if (valid) {
+          
           requestLogin(loginParams).then(res => {
-            this.logining = false;
             let { status, data, message } = res;
             if (status == "false") {
               this.$message({
@@ -101,6 +106,8 @@ export default {
           return false;
         }
       });
+      }
+      
     }
   }
 };
