@@ -57,6 +57,7 @@
               placeholder="选择日期"
               v-model="form.startime"
               style="width: 100%;"
+              @change.once="formattimeStart"
             ></el-date-picker>
           </el-col>
 
@@ -68,6 +69,7 @@
               placeholder="选择日期"
               v-model="form.endtime"
               style="width: 100%;"
+              @change.once="formattimeEnd"
             ></el-date-picker>
           </el-col>
           <el-checkbox-group v-model="form.org_license_time">
@@ -203,6 +205,18 @@ export default {
   },
     
   methods: {
+    formattimeStart(val) {
+      var aDate = val.split('-');
+      var oDate = new Date();
+      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+      this.form.startime = parseInt(oDate.getTime() / 1000);
+    },
+    formattimeEnd(val) {
+      var aDate = val.split('-');
+      var oDate = new Date();
+      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+      this.form.endtime = parseInt(oDate.getTime() / 1000);
+    },
     getSession(){
           this.activeName="second";
           return sessionStorage.getItem("merchantsId")?false:true;
@@ -304,8 +318,7 @@ export default {
       this.$router.push({ path: "/submitedInfoReview" });
     },
     handleClick(tab, event) {
-      var str=sessionStorage.getItem("merchantsId").match(/\d+/g).join();
-
+      var str=sessionStorage.getItem("merchantsId")
       let params={
         merchants_id:str
       }

@@ -47,9 +47,8 @@
             <el-date-picker
               type="date"
               placeholder="选择日期"
-              v-model="form.startime"
               style="width: 100%;"
-              @change.once="formattimeStart"
+              v-model="form.startime"
             ></el-date-picker>
           </el-col>
 
@@ -57,8 +56,8 @@
             <el-date-picker
               type="date"
               placeholder="选择日期"
-              v-model="form.endtime"
               style="width: 100%;"
+              v-model="form.endtime"
               @change.once="formattimeEnd"
             ></el-date-picker>
           </el-col>
@@ -177,8 +176,8 @@ export default {
         owner_name: "",
         owner_mail: "",
         legal_people_name: "",
-        startime: "",
-        endtime: "",
+        startime: '',
+        endtime: '',
         org_license_time: "",
         //资质附件
         org_license: ""
@@ -192,32 +191,49 @@ export default {
       return {
         ContentType: "multipart/form-data"
       };
+    },
+    startime(){
+      debugger;
+      // console.log(this.form.startime)
+      // var aDate = this.form.startime.split('-');
+      // var oDate = new Date();
+      // oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+     return parseInt(this.form.startime.getTime());
+    },
+    endtime(){
+      // var aDate = this.form.endtime.split('-');
+      // var oDate = new Date();
+      // oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+     return parseInt(this.form.endtime.getTime());
     }
   },
   beforeMount() {
     this.activeName = this.getSession() ? 'first' : 'second';
   },
   methods: {
-    formattimeStart(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.startime = parseInt(oDate.getTime());
-    },
-    formattimeEnd(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.endtime = parseInt(oDate.getTime());
-    },
+    // formattimeStart(val) {
+    //   console.log(val)
+    //   var aDate = val.split('-');
+    //   var oDate = new Date();
+    //   oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+    //   this.form.startime = parseInt(oDate.getTime());
+    //   console.log(this.form.startime)
+
+    // },
+    // formattimeEnd(val) {
+    //   console.log(val)
+    //   var aDate = val.split('-');
+    //   var oDate = new Date();
+    //   oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
+    //   this.form.endtime = parseInt(oDate.getTime());
+    //   console.log(this.form.endtime)
+    // },
     getSession() {
        if(sessionStorage.getItem("merchantsId")=="null"){
          this.sessionIs=true;
        }else{
          this.sessionIs=false;
-
        }
-
         return this.sessionIs
     },
     handleCreateMerchants() {
@@ -230,8 +246,8 @@ export default {
         });
         return;
       } else {
-        if (this.form.startime && this.form.endtime) {
-          this.org_license_time =this.form.startime + "-" + this.form.endtime
+        if (this.startime && this.endtime) {
+          this.org_license_time =this.startime + "-" + this.endtime
           
         } else {
           this.org_license_time = "永久有效";
