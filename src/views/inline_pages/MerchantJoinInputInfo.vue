@@ -75,7 +75,7 @@
             limit="1"
             :headers="headers"
             name="media"
-            action="http://192.168.3.253:8081/openApi/account_upload"
+            action="http://192.168.202.190:8081/openApi/account_upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
