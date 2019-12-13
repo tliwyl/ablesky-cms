@@ -2,8 +2,8 @@ import axios from "axios";
 
 let baseURL = "";
 //重要图片上传
-export const BuildUpLoadMedia="http://192.168.202.190:8081/openApi/media_upload";
-export const devUpLoadMedia="http://192.168.3.253:8081/openApi/media_upload";
+export const mediaUpload=`${baseURL}/openApi/media_upload`;
+export const accountUpload=`${baseURL}/openApi/account_upload`;
 
 export const requestLogin = params => {
   return axios

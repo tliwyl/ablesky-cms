@@ -28,18 +28,18 @@
           </el-radio-group>
         </el-form-item>
      
-        <el-form-item v-if="form.edu_type===1" class="must_write _fixmust" label="营业执照类型">
+        <el-form-item v-if="form.edu_type==1" class="must_write _fixmust" label="营业执照类型">
           <el-radio-group disabled v-model="form.org_type">
             <el-radio :label="1">企业法人</el-radio>
             <el-radio :label="2">个体工商户</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="form.edu_type===1" class="must_write _spin4" label=" 注册号">
+        <el-form-item v-if="form.edu_type==1" class="must_write _spin4" label=" 注册号">
           <el-input v-model="form.org_code" readonly></el-input>
         </el-form-item>
 
-        <el-form-item v-if="form.edu_type===2" class="must_write _fixmust _spin" label=" 办学许可证编号">
+        <el-form-item v-if="form.edu_type==2" class="must_write _fixmust _spin" label=" 办学许可证编号">
           <el-input v-model="form.brand_name" readonly></el-input>
         </el-form-item>
 
@@ -47,7 +47,6 @@
           <el-col :span="12">
             <el-date-picker
               disabled
-              value-format="yyyy年MM月dd日"
               format="yyyy 年 MM 月 dd 日"
               type="dates"
               v-model="startime"
@@ -58,7 +57,6 @@
           <el-col :span="12">
             <el-date-picker
               disabled
-              value-format="yyyy年MM月dd日"
               format="yyyy 年 MM 月 dd 日"
               type="dates"
               v-model="endtime"
@@ -74,9 +72,6 @@
         <el-form-item class="must_write" label="资质附件">
           <img :src="form.org_license" width="400" height="400" alt="资质附件图片"/>
         </el-form-item>
-        <!-- <el-form-item class="" label="法人姓名:">
-          <el-input readonly v-model="form.legal_people_name"></el-input>
-        </el-form-item> -->
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input readonly v-model="form.owner_name"></el-input>
         </el-form-item>

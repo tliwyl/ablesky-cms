@@ -1,6 +1,6 @@
 <template>
   <el-tabs v-model="activeName">
-    <el-tab-pane  label="商户入驻" name="first">
+    <el-tab-pane :disabled="!sessionIs" label="商户入驻" name="first">
       <el-form :model="form" label-width="110px" style="margin:20px;width:60%;min-width:600px;">
         <el-form-item class="must_write" label="商户名称:">
           <el-input v-model="form.merchants_name" placeholder="填写您的商户名称"></el-input>
@@ -15,7 +15,7 @@
         <el-form-item class="must_write" label="注册类型">
           <el-radio-group v-model="form.type">
             <el-radio :label="2">企业</el-radio>
-            <el-radio :label="1">个人</el-radio>
+            <!-- <el-radio :label="1">个人</el-radio> -->
           </el-radio-group>
         </el-form-item>
 
@@ -44,34 +44,33 @@
         <el-form-item v-if="!form.org_license_time" class="must_write _spin4" label="有效期">
           <el-col :span="12">
             <el-date-picker
-              value-format="yyyy-MM-dd"
+              type="date"
               placeholder="选择日期"
-              v-model="startime"
               style="width: 100%;"
-              @change="formattimeStart"
+              v-model="form.startime"
             ></el-date-picker>
           </el-col>
 
           <el-col :span="12">
             <el-date-picker
-              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期"
-              v-model="endtime"
               style="width: 100%;"
-              @change="formattimeEnd"
+              v-model="form.endtime"
             ></el-date-picker>
           </el-col>
         </el-form-item>
-        <el-form-item v-if="!startime && !endtime">
+        <el-form-item v-if="!form.startime && !form.endtime">
           <el-checkbox-group v-model="form.org_license_time">
             <el-checkbox label="永久有效">永久有效</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <!-- 图片上传 -->
         <el-form-item class="must_write" label="资质附件">
+          <!-- 资质附件 上传图片只能是 account 没有携带任何参数 与上传相关接口-->
+          <!--  :data="{merchants_id:mid}" -->
           <el-upload
-            tip="上传一张营业执照"
+            tip="资质附件"
             limit="1"
             :headers="headers"
             name="media"
@@ -88,9 +87,7 @@
             <img width="100%" :src="dialogImageUrl" alt>
           </el-dialog>
         </el-form-item>
-        <el-form-item class label="法人姓名:">
-          <el-input v-model="form.legal_people_name" placeholder="个体工商户不填"></el-input>
-        </el-form-item>
+       
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input v-model="form.owner_name" placeholder="填写您的姓名"></el-input>
         </el-form-item>
@@ -113,8 +110,8 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click.native.prevent="handleCreateMerchants">重新提交</el-button>
-          <el-button @click.native.prevent="handleEsc">取消</el-button>
+          <el-button type="primary" @click.native.prevent="handleCreateMerchants">立即创建</el-button>
+          <el-button @click.native.prevent="handleRefish">取消</el-button>
         </el-form-item>
       </el-form>
     </el-tab-pane>
@@ -122,11 +119,54 @@
 </template>
 
 <script>
-import { phoneCode, createMerchants, checkMerchantState,reSubmitMerchant} from "../../api/api";
+import {getMerchantsInfo, phoneCode, createMerchants, checkMerchantState,reSubmitMerchant} from "../../api/api";
 import qs from "qs";
 export default {
   data() {
     return {
+      mid:sessionStorage.getItem("merchantsId"),
+      isReSubmit:false,
+      merchantsState: {
+        status: "",
+        audit_time: "",
+        audit_msg: "",
+        name: ""
+      },
+      nextStep:false,
+      sessionIs: true,
+      disabled: true,
+      buttonName: "发送短信",
+      isDisabled: false,
+      time: 60,
+      insertNumer: {
+        owner_phone: "",
+        validateCode: ""
+      },
+      activeName: "first",
+      checktimestate: "0",
+      form: {
+        // 商户名称
+        merchants_name: "",
+        //企业学校名称
+        org_name: "",
+        brand: "",
+        type: "",
+        edu_type: "",
+        //营业执照类型，edutype：1才有
+        org_type: "",
+        org_code: "",
+        owner_name: "",
+        owner_mail: "",
+        startime: '',
+        endtime: '',
+        org_license_time: "",
+        //资质附件
+        org_license: ""
+      },
+      dialogImageUrl: "",
+      dialogVisible: false,
+      stepState:"success",
+    
       merchantsState: {
         status: "",
         audit_time: "",
@@ -161,7 +201,7 @@ export default {
         org_code: "",
         owner_name: "",
         owner_mail: "",
-        legal_people_name: "",
+       // legal_people_name: "",
         org_license_time: "",
         //资质附件
         org_license: ""
@@ -170,29 +210,60 @@ export default {
       dialogVisible: false
     };
   },
+  created(){
+    if(this.$router){
+      let str=sessionStorage.getItem("merchantsId");
+    let params={
+      merchants_id:str
+    }
+    getMerchantsInfo(params).then(data=>{
+      if(data.data){
+        let reviewdata=data.data;
+        console.log(reviewdata)
+        if(reviewdata.id!=""){
+        this.form.startime=reviewdata.orgLicenseTime.split("-")[0] ;
+        this.form.endtime=reviewdata.orgLicenseTime.split("-")[1] ;
+        }else{
+          this.form.org_license_time="永久有效"
+        }
+        this.form.merchants_name=reviewdata.merchantsName || "未填写"
+        this.form.org_name=reviewdata.orgName || "未填写"
+        this.form.brand =reviewdata.brand || "未填写"
+        this.form.edu_type=reviewdata.eduType
+        this.form.org_type=reviewdata.orgType
+        this.form.org_code=reviewdata.orgCode 
+        this.form.owner_name=reviewdata.ownerName || "未填写"
+        this.form.owner_mail=reviewdata.ownerMail || "未填写"
+       
+        this.form.org_license=reviewdata.orgLicense || "未填写"
+        this.form.org_license_time=reviewdata.orgLicenseTime || "未填写"
+        this.form.type=2
+        this.insertNumer.owner_phone=reviewdata.ownerPhone || "未填写"
+        this.name=sessionStorage.getItem("username")
+      }else{
+        this.$message({
+          message:"请重新操作一遍",
+          type:"info"
+        });
+      }
+    })}
+  },
   computed: {
     headers() {
       return {
         ContentType: "multipart/form-data"
       };
+    },
+    startime(){
+     return parseInt(this.form.startime.getTime());
+    },
+    endtime(){
+     return parseInt(this.form.endtime.getTime());
     }
   },
   methods: {
     handleEsc(){
-      this.$router.push('/reSubmitMerchant')
-    },
-    formattimeStart(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.startime = parseInt(oDate.getTime() / 1000);
-    },
-    formattimeEnd(val) {
-      var aDate = val.split('-');
-      var oDate = new Date();
-      oDate.setFullYear(aDate[0], aDate[1] + 1, aDate[2]);
-      this.form.endtime = parseInt(oDate.getTime() / 1000);
-
+      this.$router.push('/merchantJoinInputInfo')
     },
     getSession() {
       return sessionStorage.getItem("merchantsId").match(/\d+/g)
@@ -209,11 +280,9 @@ export default {
         });
         return;
       } else {
-        console.log(this.startime)
-        if (this.form.startime && this.form.endtime) {
+        if (this.startime && this.endtime) {
           this.org_license_time = 
-            this.form.startime + "-" + this.form.endtime
-            console.log(this.org_license_time)
+            this.startime + "-" + this.endtime
         } else {
           this.org_license_time = "永久有效";
         }
@@ -222,11 +291,11 @@ export default {
           org_name: this.form.org_name,
           brand: this.form.brand,
           edu_type: String(this.form.edu_type),
-          org_type: this.form.org_type,
+          org_type: String(this.form.org_type),
           org_code: this.form.org_code,
           owner_name: this.form.owner_name,
           owner_mail: this.form.owner_mail,
-          legal_people_name: this.form.legal_people_name,
+         // legal_people_name: this.form.legal_people_name,
           org_license_time: this.org_license_time,
           org_license: this.form.org_license
         };
@@ -241,7 +310,6 @@ export default {
         params = qs.stringify(params);
 
         reSubmitMerchant(params).then(data => {
-          console.log(data)
           if (data.merchants_id) {
             this.$message({
               message: "创建成功",

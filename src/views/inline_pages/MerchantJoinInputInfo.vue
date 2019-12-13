@@ -75,7 +75,7 @@
             limit="1"
             :headers="headers"
             name="media"
-            action="http://192.168.202.190:8081/openApi/account_upload"
+            action="http://192.168.3.253:8081/openApi/account_upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
@@ -88,15 +88,12 @@
             <img width="100%" :src="dialogImageUrl" alt>
           </el-dialog>
         </el-form-item>
-       
         <el-form-item class="must_write _spin3" label="联系人姓名:">
           <el-input v-model="form.owner_name" placeholder="填写您的姓名"></el-input>
         </el-form-item>
-
         <el-form-item class="must_write _fixmust" label="联系人手机号">
           <el-row>
             <el-input style="width:80%" v-model="insertNumer.owner_phone" placeholder="填写您的手机号"></el-input>
-
             <el-button class="validateCode" @click="sendMsg()" :disabled="isDisabled">{{buttonName}}</el-button>
           </el-row>
         </el-form-item>
@@ -132,19 +129,19 @@
       <el-row style="margin-left:350px">
         <el-button @click="handleSubmitedInfo">查看已提交信息</el-button>
         <el-button @click="reSubmitMerchant" :disabled="isReSubmit">修改并重新申请</el-button>
-        <el-button type="info" :disabled="nextStep" @click="handleClickNext">下一步</el-button>
+        <el-button @click="handleClickNext" :disabled="nextStep">下一步</el-button>
       </el-row>
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
+//import baseURL from '../../../config/api.config'
 import { phoneCode, createMerchants, checkMerchantState } from "../../api/api";
 import qs from "qs";
 export default {
   data() {
     return {
-      nextStep:false,
       mid:sessionStorage.getItem("merchantsId"),
       isReSubmit:false,
       merchantsState: {
@@ -153,6 +150,7 @@ export default {
         audit_msg: "",
         name: ""
       },
+      nextStep:false,
       sessionIs: true,
       disabled: true,
       buttonName: "发送短信",
@@ -206,7 +204,6 @@ export default {
     this.activeName = this.getSession() ? 'first' : 'second';
   },
   methods: {
-    
     handleRefish(){
       this.$router.push({path:"/merchantJoinInputInfo"})
     },
@@ -225,7 +222,6 @@ export default {
         }
       checkMerchantState(qs.stringify(params)).then(res=>{
           if(res.data.status==0){
-          //  console.log(res.data.status)
             this.sessionIs=false;
           }else{
             this.sessionIs=true;
@@ -244,8 +240,8 @@ export default {
         return;
       } else {
         if (this.startime && this.endtime) {
+
           this.org_license_time =this.startime + "-" + this.endtime
-          
         } else {
           this.org_license_time = "永久有效";
         }
@@ -255,7 +251,7 @@ export default {
           edu_type: String(this.form.edu_type),
           org_type: String(this.form.org_type),
           org_code: this.form.org_code,
-          org_name:this.form.org_name,//问题
+          org_name:this.form.org_name,
           org_license_time: this.org_license_time,
           org_license: this.form.org_license,
           owner_name: this.form.owner_name,
@@ -358,11 +354,14 @@ export default {
       };
       checkMerchantState(qs.stringify(params)).then(data => {
         //修改并重新申请，按钮控制
-        if( data.data.status=="2"){
-          this.nextStep=true;
-        }else{
+        //console.log(data)
+        if(data.data.status=="2"){
           this.nextStep=false;
+
+        }else{
+          this.nextStep=true;
         }
+        console.log(this.nextStep)
         if(data.data.status=="1"){
           this.isReSubmit=false;
           this.stepState="error";
