@@ -68,13 +68,14 @@
         </el-form-item>
         <!-- 图片上传 -->
         <el-form-item class="must_write" label="资质附件">
-          <!-- 资质附件 上传图片只能是account 没有携带任何参数 与上传相关接口-->
+          <!-- 资质附件 上传图片只能是 account 没有携带任何参数 与上传相关接口-->
+          <!--  :data="{merchants_id:mid}" -->
           <el-upload
-            tip="上传一张营业执照"
+            tip="资质附件"
             limit="1"
             :headers="headers"
             name="media"
-            action="http://192.168.3.253:8081/openApi/account_upload"
+            action="http://192.168.202.190:8081/openApi/account_upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
@@ -120,7 +121,8 @@
         v-model="merchantsState.status"
         :active="Number(merchantsState.status+1)"
         style="margin-left:200px"
-        finish-status="success"
+         :finish-status="stepState"
+        process-status="process"
       >
         <el-step title="信息填写"></el-step>
         <el-step title="进行中"></el-step>
@@ -130,7 +132,7 @@
       <el-row style="margin-left:350px">
         <el-button @click="handleSubmitedInfo">查看已提交信息</el-button>
         <el-button @click="reSubmitMerchant" :disabled="isReSubmit">修改并重新申请</el-button>
-        <el-button type="info" @click="handleClickNext">下一步</el-button>
+        <el-button type="info" :disabled="nextStep" @click="handleClickNext">下一步</el-button>
       </el-row>
     </el-tab-pane>
   </el-tabs>
@@ -142,6 +144,7 @@ import qs from "qs";
 export default {
   data() {
     return {
+      nextStep:false,
       mid:sessionStorage.getItem("merchantsId"),
       isReSubmit:false,
       merchantsState: {
@@ -182,7 +185,8 @@ export default {
         org_license: ""
       },
       dialogImageUrl: "",
-      dialogVisible: false
+      dialogVisible: false,
+      stepState:"success"
     };
   },
   computed: {
@@ -202,6 +206,7 @@ export default {
     this.activeName = this.getSession() ? 'first' : 'second';
   },
   methods: {
+    
     handleRefish(){
       this.$router.push({path:"/merchantJoinInputInfo"})
     },
@@ -340,6 +345,7 @@ export default {
     },
     handleLicenseSuccess(res, file) {
       this.form.org_license = res.data;
+     //console.log(this.form.org_license)
     },
     PicLicenseErr(err, file, fileList) {
       //console.log(err);
@@ -352,10 +358,17 @@ export default {
       };
       checkMerchantState(qs.stringify(params)).then(data => {
         //修改并重新申请，按钮控制
+        if( data.data.status=="2"){
+          this.nextStep=true;
+        }else{
+          this.nextStep=false;
+        }
         if(data.data.status=="1"){
           this.isReSubmit=false;
+          this.stepState="error";
         }else{
           this.isReSubmit=true;
+          this.stepState="success";//进度条
         }
         this.merchantsState.status = data.data.status;
         this.merchantsState.name = data.data.name;

@@ -96,10 +96,10 @@ export default {
   },
   mounted() {
     //console.log(this.$router)
-    console.log(this.$route);
+    //console.log(this.$route);
     const route = this.$route;
     const query = route.query;
-    console.log(query);
+   // console.log(query);
     this.material_id = query.material_id;
     this.getShopList();
   }

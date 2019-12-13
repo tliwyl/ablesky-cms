@@ -73,7 +73,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click.native.prevent="handleMsgSure">确定</el-button>
-            <el-button @clcik.native.prevent="handleBackToList">取消</el-button>
+            <el-button @clcik="handleBackToList">取消</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -175,10 +175,10 @@
               <el-checkbox label="封闭住宿"></el-checkbox>
               <el-checkbox label="免费重读"></el-checkbox>
               <el-checkbox label="外教小班"></el-checkbox>
-              <el-checkbox label="外教一对一"></el-checkbox>
+              <el-checkbox label="外教1对1"></el-checkbox>
               <el-checkbox label="小班教学"></el-checkbox>
               <el-checkbox label="外教数学"></el-checkbox>
-              <el-checkbox label="一对一教学"></el-checkbox>
+              <el-checkbox label="1对1教学"></el-checkbox>
             </el-checkbox-group>
             <span class="desc_span">最多选三项</span>
           </el-form-item>

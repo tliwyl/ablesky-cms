@@ -103,7 +103,7 @@ export default {
   methods: {
     //去往绑定页面
     handleToPublish(idx, row) {
-      console.log(idx, row);
+   //   console.log(idx, row);
       this.$router.push({ path: "/BuildPartPublish", query: { ...row} });
     },
 
@@ -144,12 +144,6 @@ export default {
       });
     },
     addNewOne() {
-      let cur = this.$router.history.current.fullPath;
-      if (cur === "/addPartsNew") {
-        console.log(cur);
-      } else {
-        console.log(cur);
-      }
       sessionStorage.setItem("material_type", this.material_type);
       this.$router.push({ path: "/addPartsNew" });
     },
@@ -178,7 +172,7 @@ export default {
       };
       //console.log(params);
       unpublishMaterial(qs.stringify(params)).then(res => {
-        console.log(res);
+       // console.log(res);
       });
     },
     handleView(index, row) {

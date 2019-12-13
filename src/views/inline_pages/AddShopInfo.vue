@@ -35,7 +35,6 @@
 
     <el-form-item class="must_write" label="机构头图">
       <el-upload
-        tip="上传一张营业执照"
         limit="1"
         :headers="headers"
         :data="{merchants_id: mid}"
@@ -58,7 +57,7 @@
       <el-cascader :options="categorys" @change="handleChangeCate"></el-cascader>
     </el-form-item>
 
-    <el-form-item class="must_write _spin1" label="营业日">
+    <el-form-item class="must_write _spin4" label="营业日">
       <el-select v-model="values" placeholder="选择营业日">
         <el-option v-for="item in arr" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
@@ -91,7 +90,7 @@
       ></el-time-select>
     </el-form-item>
 
-    <el-form-item class label="合作授权协议">
+    <el-form-item class="must_write _con" label="合作授权协议">
       <el-upload
         limit="1"
         :headers="headers"
@@ -273,7 +272,7 @@ export default {
         code: this.insertNumer.validateCode,
         owner_mail: this.form.owner_mail,
         position: this.form.position,
-        service_city: this.selectedOptionsServiceCity,
+        service_city: this.selectedOptionsServiceCity ||["全国"],
         tp_auth_img: this.form.tp_auth_img
       };
 
@@ -392,5 +391,8 @@ export default {
 }
 ._spin4::before {
   margin-left: 46px !important;
+}
+._con::before{
+  margin-left:2px !important; 
 }
 </style>
